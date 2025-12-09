@@ -1,0 +1,221 @@
+/* ================================
+   CUSTOM FONTS
+================================ */
+@font-face {
+  font-family: 'Aldrich';
+  src: url('./fonts/Aldrich-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('./fonts/NotoSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ================================
+   GLOBAL STYLES
+================================ */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Aldrich', system-ui, sans-serif;
+}
+
+/* ================================
+   ROOT BACKGROUND
+================================ */
+.launcher-root {
+  width: 100vw;
+  height: 100vh;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+  overflow: hidden;
+  color: white;
+
+  font-family: 'Aldrich', sans-serif;
+}
+
+/* ================================
+   CENTER — 3 CARDS
+================================ */
+.launcher-center {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+}
+
+/* ================================
+   CARD
+================================ */
+.launcher-card {
+  position: relative;
+  width: 442px;
+  height: 655px;
+
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.launcher-card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.launcher-card-inner {
+  position: relative;
+  padding: 40px 36px 80px 36px;
+
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================================
+   CARD ICON
+================================ */
+.launcher-card-icon-wrapper {
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+
+.launcher-card-icon {
+  width: 140px;
+  height: auto;
+}
+
+/* ================================
+   TEXT AREA (Centered)
+================================ */
+.launcher-card-text {
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* teks berada di tengah area text */
+
+  flex-grow: 1;            /* isi area tengah card */
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* ================================
+   CARD TITLE & DESCRIPTION
+================================ */
+.launcher-card-title {
+  font-family: 'Aldrich' !important;
+  font-size: 24px;
+  font-weight: 700;
+
+  margin: 0;
+  padding: 0;
+}
+
+.launcher-card-description {
+  font-family: 'Aldrich' !important;
+  font-size: 16px;
+
+  margin-top: 25px;        /* Jarak 25px dari title */
+  line-height: 1.4;
+  text-align: center;
+
+  max-width: 340px;        /* propsional dengan card 442px */
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* ================================
+   BUTTON (NOTOSANS)
+================================ */
+.launcher-btn {
+  position: relative;
+  border: none;
+  padding: 0;
+  margin-top: 32px;
+  background: transparent;
+  cursor: pointer;
+  align-self: center;
+}
+
+.launcher-btn-bg {
+  display: block;
+  width: 250px;
+  height: auto;
+}
+
+.launcher-btn-label {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'NotoSans' !important;
+  font-size: 20px;
+  font-weight: 700;
+  color: black;
+}
+
+/* ================================
+   CLOSE BUTTON
+================================ */
+.launcher-close {
+  position: absolute;
+  top: 45px;
+  right: 48px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.launcher-close-icon {
+  width: 42px;
+  height: 42px;
+  color: #FF0221;
+  transition: 0.2s ease;
+}
+
+.launcher-close-icon:hover {
+  transform: scale(1.08);
+  color: #ff3040;
+}
+
+/* ================================
+   FOOTER
+================================ */
+.launcher-footer {
+  position: absolute;
+  left: 48px;
+  bottom: 28px;
+
+  font-family: 'Aldrich' !important;
+  font-size: 22px;
+  color: white;
+}
