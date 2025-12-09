@@ -23,8 +23,7 @@ const DEV_APPS = {
 }
 
 // ===============================
-// CONFIG PROD: buka .app hasil build
-// GANTI path di bawah sesuai lokasi .app milikmu
+// CONFIG PROD
 // ===============================
 const PROD_APPS = {
   analytics: {
@@ -41,7 +40,6 @@ const PROD_APPS = {
   }
 }
 
-// Pakai config sesuai environment
 const APPS = is.dev ? DEV_APPS : PROD_APPS
 
 function startExternalApp(key) {
@@ -57,7 +55,6 @@ function startExternalApp(key) {
     shell: true
   }
 
-  // Kalau dev dan ada cwd, kita set working directory-nya
   if (cfg.cwd) {
     options.cwd = cfg.cwd
   }
@@ -74,7 +71,7 @@ function createWindow() {
     height: 900,
     show: true,
     autoHideMenuBar: true,
-    fullscreen: true,
+    // fullscreen: true,                // ⬅️ bisa dimatiin kalau mau
     titleBarStyle: 'hiddenInset',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -97,6 +94,8 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 app.whenReady().then(() => {
@@ -106,19 +105,32 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC lama (boleh dibiarkan)
   ipcMain.on('ping', () => console.log('pong'))
 
+  const mainWindow = createWindow()
+
   // IPC baru: dipanggil dari React
-  ipcMain.handle('launch-app', (_event, key) => {
-    return startExternalApp(key)
+  ipcMain.handle('launch-app', (event, key) => {
+    const res = startExternalApp(key)
+
+    if (res.ok) {
+      // Cari window launcher berdasarkan sender, fallback ke mainWindow
+      const win = BrowserWindow.fromWebContents(event.sender) || mainWindow
+      if (win) {
+        if (win.isFullScreen()) {
+          win.setFullScreen(false)
+        }
+        win.minimize()
+        // atau win.blur() kalau nggak mau minimize
+      }
+    }
+
+    return res
   })
 
   ipcMain.on('quit-launcher', () => {
     app.quit()
   })
-
-  createWindow()
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
