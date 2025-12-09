@@ -71,7 +71,7 @@ function createWindow() {
     height: 900,
     show: true,
     autoHideMenuBar: true,
-    // fullscreen: true,                // ⬅️ bisa dimatiin kalau mau
+    fullscreen: true,                // ⬅️ bisa dimatiin kalau mau
     titleBarStyle: 'hiddenInset',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -117,9 +117,9 @@ app.whenReady().then(() => {
       // Cari window launcher berdasarkan sender, fallback ke mainWindow
       const win = BrowserWindow.fromWebContents(event.sender) || mainWindow
       if (win) {
-        if (win.isFullScreen()) {
-          win.setFullScreen(false)
-        }
+        // if (win.isFullScreen()) {
+        //   win.setFullScreen(false)
+        // }
         win.minimize()
         // atau win.blur() kalau nggak mau minimize
       }
