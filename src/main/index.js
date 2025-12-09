@@ -9,19 +9,16 @@ import { spawn } from 'child_process'
 // ===============================
 const DEV_APPS = {
   analytics: {
-    cwd: '/Users/sii/My Documents/work/forensic-analytics-app',
-    cmd: 'npm',
-    args: ['run', 'dev']
+    cmd: 'C:\\work\\sii\\launcher\\DataAnalytics\\win-unpacked\\Data-Analytics-Platform.exe',
+    args: []
   },
   case: {
-    cwd: '/Users/sii/My Documents/work/forensic-case-app',
-    cmd: 'npm',
-    args: ['run', 'dev']
+    cmd: 'C:\\work\\sii\\launcher\\CaseAnalytics\\win-unpacked\\Case-Analytics-Platform.exe',
+    args: []
   },
   encryptor: {
-    cwd: '/Users/sii/Documents/file-encryptor-app',
-    cmd: 'npm',
-    args: ['run', 'dev']
+    cmd: 'C:\\work\\sii\\launcher\\Encryptor\\win-unpacked\\Encryptor-Analytics-Platform.exe',
+    args: []
   }
 }
 
@@ -31,17 +28,16 @@ const DEV_APPS = {
 // ===============================
 const PROD_APPS = {
   analytics: {
-    cmd: 'open',
-    // -n = buka instance baru (kalau sudah jalan tidak fokusin yang lama)
-    args: ['-n', '/Applications/DigiFor/Forensic Analytics Platform.app']
+    cmd: 'C:\\work\\sii\\launcher\\DataAnalytics\\win-unpacked\\Data-Analytics-Platform.exe',
+    args: []
   },
   case: {
-    cmd: 'open',
-    args: ['-n', '/Applications/DigiFor/Forensic Case Platform.app']
+    cmd: 'C:\\work\\sii\\launcher\\CaseAnalytics\\win-unpacked\\Case-Analytics-Platform.exe',
+    args: []
   },
   encryptor: {
-    cmd: 'open',
-    args: ['-n', '/Applications/DigiFor/File Encryptor.app']
+    cmd: 'C:\\work\\sii\\launcher\\Encryptor\\win-unpacked\\Encryptor-Analytics-Platform.exe',
+    args: []
   }
 }
 
@@ -74,10 +70,11 @@ function startExternalApp(key) {
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
+    width: 1366,
+    height: 900,
+    show: true,
     autoHideMenuBar: true,
+    titleBarStyle:'hiddenInset',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
