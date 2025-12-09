@@ -4,41 +4,31 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn } from 'child_process'
 
-// ===============================
-// CONFIG DEV: npm run dev
-// ===============================
+const BASE = import.meta.env?.VITE_LAUNCHER_PATH
+console.log('[LAUNCHER BASE PATH]:', BASE)
+
+// =============================================================
+// CONFIG DEV
+// =============================================================
 const DEV_APPS = {
   analytics: {
-    cmd: 'C:\\work\\sii\\launcher\\DataAnalytics\\win-unpacked\\Data-Analytics-Platform.exe',
+    cmd: join(BASE, 'DataAnalytics', 'win-unpacked', 'Data-Analytics-Platform.exe'),
     args: []
   },
   case: {
-    cmd: 'C:\\work\\sii\\launcher\\CaseAnalytics\\win-unpacked\\Case-Analytics-Platform.exe',
+    cmd: join(BASE, 'CaseAnalytics', 'win-unpacked', 'Case-Analytics-Platform.exe'),
     args: []
   },
   encryptor: {
-    cmd: 'C:\\work\\sii\\launcher\\Encryptor\\win-unpacked\\Encryptor-Analytics-Platform.exe',
+    cmd: join(BASE, 'Encryptor', 'win-unpacked', 'Encryptor-Analytics-Platform.exe'),
     args: []
   }
 }
 
-// ===============================
-// CONFIG PROD
-// ===============================
-const PROD_APPS = {
-  analytics: {
-    cmd: 'C:\\work\\sii\\launcher\\DataAnalytics\\win-unpacked\\Data-Analytics-Platform.exe',
-    args: []
-  },
-  case: {
-    cmd: 'C:\\work\\sii\\launcher\\CaseAnalytics\\win-unpacked\\Case-Analytics-Platform.exe',
-    args: []
-  },
-  encryptor: {
-    cmd: 'C:\\work\\sii\\launcher\\Encryptor\\win-unpacked\\Encryptor-Analytics-Platform.exe',
-    args: []
-  }
-}
+// =============================================================
+// CONFIG PROD (pakai ENV yang sama)
+// =============================================================
+const PROD_APPS = { ...DEV_APPS }
 
 const APPS = is.dev ? DEV_APPS : PROD_APPS
 
@@ -49,21 +39,16 @@ function startExternalApp(key) {
     return { ok: false, error: 'Unknown app key' }
   }
 
-  const options = {
+  const child = spawn(cfg.cmd, cfg.args, {
     detached: true,
     stdio: 'ignore',
     shell: true
-  }
+  })
 
-  if (cfg.cwd) {
-    options.cwd = cfg.cwd
-  }
-
-  const child = spawn(cfg.cmd, cfg.args, options)
   child.unref()
-
   return { ok: true }
 }
+
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -71,7 +56,7 @@ function createWindow() {
     height: 900,
     show: true,
     autoHideMenuBar: true,
-    fullscreen: true,                // ⬅️ bisa dimatiin kalau mau
+    fullscreen: true,
     titleBarStyle: 'hiddenInset',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -80,9 +65,7 @@ function createWindow() {
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
+  mainWindow.on('ready-to-show', () => mainWindow.show())
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -105,40 +88,24 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  ipcMain.on('ping', () => console.log('pong'))
-
   const mainWindow = createWindow()
 
-  // IPC baru: dipanggil dari React
   ipcMain.handle('launch-app', (event, key) => {
     const res = startExternalApp(key)
-
     if (res.ok) {
-      // Cari window launcher berdasarkan sender, fallback ke mainWindow
       const win = BrowserWindow.fromWebContents(event.sender) || mainWindow
-      if (win) {
-        // if (win.isFullScreen()) {
-        //   win.setFullScreen(false)
-        // }
-        win.minimize()
-        // atau win.blur() kalau nggak mau minimize
-      }
+      win?.minimize()
     }
-
     return res
   })
 
-  ipcMain.on('quit-launcher', () => {
-    app.quit()
-  })
+  ipcMain.on('quit-launcher', () => app.quit())
 
-  app.on('activate', function () {
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  if (process.platform !== 'darwin') app.quit()
 })
