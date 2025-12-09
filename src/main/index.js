@@ -74,6 +74,7 @@ function createWindow() {
     height: 900,
     show: true,
     autoHideMenuBar: true,
+    fullscreen: true,
     titleBarStyle: 'hiddenInset',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
