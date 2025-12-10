@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -6,6 +6,38 @@ import { spawn } from 'child_process'
 
 const BASE = import.meta.env?.VITE_LAUNCHER_PATH
 console.log('[LAUNCHER BASE PATH]:', BASE)
+
+// =============================================================
+// LICENSE TEST 5 Menit
+// =============================================================
+
+// Waktu saat modul ini di-load (saat app start)
+const NOW = new Date()
+const LICENSE_START = NOW
+const LICENSE_END = new Date(NOW.getTime() + 5 * 60 * 1000) // +5 menit
+
+console.log('[LICENSE TEST] Start :', LICENSE_START)
+console.log('[LICENSE TEST] End   :', LICENSE_END)
+
+function isLicenseValid() {
+  // ❗ Kalau mau bebas saat development, bisa aktifkan lagi ini:
+  // if (is.dev) return true
+
+  const now = new Date()
+  return now >= LICENSE_START && now < LICENSE_END
+}
+
+function showLicenseErrorAndQuit() {
+  dialog.showMessageBoxSync({
+    type: 'error',
+    title: 'License expired',
+    message:
+      'Masa berlaku aplikasi test (5 menit) sudah berakhir atau belum dimulai.\n\n' +
+      `Periode lisensi sementara:\n${LICENSE_START.toString()} — ${LICENSE_END.toString()}\n\n` +
+      'Silakan restart aplikasi untuk reset waktu test.'
+  })
+  app.quit()
+}
 
 // =============================================================
 // CONFIG DEV
@@ -33,6 +65,18 @@ const PROD_APPS = { ...DEV_APPS }
 const APPS = is.dev ? DEV_APPS : PROD_APPS
 
 function startExternalApp(key) {
+  // Cek lisensi setiap kali mau launch external app
+  if (!isLicenseValid()) {
+    dialog.showMessageBox({
+      type: 'error',
+      title: 'License expired',
+      message:
+        'Lisensi test 5 menit sudah berakhir.\n' +
+        'Silakan tutup dan buka kembali launcher untuk mengulang masa test.'
+    })
+    return { ok: false, error: 'license_expired' }
+  }
+
   const cfg = APPS[key]
   if (!cfg) {
     console.error('Unknown app key:', key)
@@ -48,7 +92,6 @@ function startExternalApp(key) {
   child.unref()
   return { ok: true }
 }
-
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -82,6 +125,12 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // 🔒 Cek lisensi saat app mulai
+  if (!isLicenseValid()) {
+    showLicenseErrorAndQuit()
+    return
+  }
+
   electronApp.setAppUserModelId('forensic-launcher-app')
 
   app.on('browser-window-created', (_, window) => {
@@ -102,7 +151,14 @@ app.whenReady().then(() => {
   ipcMain.on('quit-launcher', () => app.quit())
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      // Kalau buka lagi dari dock/taskbar, cek lisensi lagi
+      if (!isLicenseValid()) {
+        showLicenseErrorAndQuit()
+        return
+      }
+      createWindow()
+    }
   })
 })
 
