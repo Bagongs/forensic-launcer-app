@@ -14,6 +14,7 @@ import buttonSvg from './assets/icons/Button.svg'
 import iconCase from './assets/icons/Case Management.svg'
 import iconAnalytics from './assets/icons/Analytic.svg'
 import iconEncryptor from './assets/icons/Encryptor.svg'
+import LicenseGate from './components/LicensePage'
 
 function AppCard({ icon, title, description, onLaunch }) {
   return (
@@ -68,51 +69,53 @@ function App() {
   }
 
   return (
-    <>
-      <div className="launcher-root" style={{ backgroundImage: `url(${bgLauncher})` }}>
-        {/* Header */}
-        <img src={headerImg} alt="Big Data Analysis Platform" className="launcher-header" />
+    <LicenseGate>
+      <>
+        <div className="launcher-root" style={{ backgroundImage: `url(${bgLauncher})` }}>
+          {/* Header */}
+          <img src={headerImg} alt="Big Data Analysis Platform" className="launcher-header" />
 
-        {/* Close Button -> buka modal */}
-        <button className="launcher-close" onClick={handleClickClose} aria-label="Close">
-          <IoMdCloseCircle className="launcher-close-icon" />
-        </button>
+          {/* Close Button -> buka modal */}
+          <button className="launcher-close" onClick={handleClickClose} aria-label="Close">
+            <IoMdCloseCircle className="launcher-close-icon" />
+          </button>
 
-        {/* kontainer kartu */}
-        <div className="launcher-center">
-          <AppCard
-            icon={iconCase}
-            title="Case Analytics Platform"
-            description="System for managing cases, evidence records, and suspect profiles."
-            onLaunch={launchCase}
-          />
+          {/* kontainer kartu */}
+          <div className="launcher-center">
+            <AppCard
+              icon={iconCase}
+              title="Case Analytics Platform"
+              description="System for managing cases, evidence records, and suspect profiles."
+              onLaunch={launchCase}
+            />
 
-          <AppCard
-            icon={iconAnalytics}
-            title="Data Analytics Platform"
-            description="Processes SDP data into structured analytical outputs."
-            onLaunch={launchAnalytics}
-          />
+            <AppCard
+              icon={iconAnalytics}
+              title="Data Analytics Platform"
+              description="Processes SDP data into structured analytical outputs."
+              onLaunch={launchAnalytics}
+            />
 
-          <AppCard
-            icon={iconEncryptor}
-            title="Encryptor Analytics Platform"
-            description="Converts XLS/CSV/TXT files into standardized SDP format."
-            onLaunch={launchEncryptor}
-          />
+            <AppCard
+              icon={iconEncryptor}
+              title="Encryptor Analytics Platform"
+              description="Converts XLS/CSV/TXT files into standardized SDP format."
+              onLaunch={launchEncryptor}
+            />
+          </div>
+
+          {/* Footer */}
+          <div className="launcher-footer">© Copyright 2025</div>
         </div>
 
-        {/* Footer */}
-        <div className="launcher-footer">© Copyright 2025</div>
-      </div>
-
-      {/* Modal Close Confirmation */}
-      <CloseConfirmModal
-        open={showConfirm}
-        onCancel={handleCancelClose}
-        onConfirm={handleConfirmClose}
-      />
-    </>
+        {/* Modal Close Confirmation */}
+        <CloseConfirmModal
+          open={showConfirm}
+          onCancel={handleCancelClose}
+          onConfirm={handleConfirmClose}
+        />
+      </>
+    </LicenseGate>
   )
 }
 

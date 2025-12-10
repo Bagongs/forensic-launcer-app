@@ -3,8 +3,10 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn } from 'child_process'
+import axios from 'axios'
 
 const BASE = import.meta.env?.VITE_LAUNCHER_PATH
+const BACKEND_BASE = import.meta.env?.VITE_BACKEND_URL
 console.log('[LAUNCHER BASE PATH]:', BASE)
 
 // =============================================================
@@ -164,4 +166,18 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+})
+
+ipcMain.handle('license:getInfo', async () => {
+  try {
+    const res = await axios.get(`${BACKEND_BASE}/license`)
+    return res.data
+  } catch (error) {
+    console.error('[IPC license:getInfo] Error:', error)
+    return {
+      status: 500,
+      message: 'Failed to get license',
+      error: error.message
+    }
+  }
 })
