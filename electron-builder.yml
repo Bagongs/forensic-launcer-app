@@ -1,7 +1,9 @@
-appId: com.electron.app
-productName: digifor-launcer
+appId: com.digifor.bigdata-analytics
+productName: Big Data Analytics Platform
+
 directories:
   buildResources: build
+
 files:
   - '!**/.vscode/*'
   - '!src/*'
@@ -10,13 +12,19 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
 asarUnpack:
   - resources/**
+
 win:
-  executableName: digifor-launcer
+  # nama file exe: BigDataAnalyticsPlatform.exe
+  executableName: BigDataAnalyticsPlatform
+
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  # nama file installer: Big-Data-Analytics-Platform-<version>-setup.exe
+  artifactName: Big-Data-Analytics-Platform-${version}-setup.${ext}
+  # nama shortcut di Desktop/Start Menu akan pakai productName
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -25,8 +33,11 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
+
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  # nama file DMG
+  artifactName: Big-Data-Analytics-Platform-${version}.${ext}
+
 linux:
   target:
     - AppImage
@@ -34,9 +45,13 @@ linux:
     - deb
   maintainer: electronjs.org
   category: Utility
+
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  # nama file AppImage
+  artifactName: Big-Data-Analytics-Platform-${version}.${ext}
+
 npmRebuild: false
+
 publish:
   provider: generic
   url: https://example.com/auto-updates
